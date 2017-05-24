@@ -6,7 +6,7 @@
 #include <sdkhooks>
 #include <zombiereloaded>
 
-#define PLUGIN_AUTHOR "Agent Wesker"
+#define PLUGIN_AUTHOR "Agent Wesker & Rules of _P"
 #define PLUGIN_VERSION "1.0"
 
 //#define DEBUG
@@ -33,7 +33,7 @@ public Plugin myinfo =
 {
 	name = "ZR Tagging",
 	author = PLUGIN_AUTHOR,
-	description = "Replacement tagging to fix issues with built in system",
+	description = "Replacement tagging to fix issues with built in system, based on burn_slow",
 	version = PLUGIN_VERSION,
 	url = "https://steam-gamers.net/"
 };
