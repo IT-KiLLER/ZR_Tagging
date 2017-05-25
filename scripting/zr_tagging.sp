@@ -14,7 +14,7 @@
 
 //#define DEBUG
 
-//Bit Macros
+//Bit Macros thanks to https://forums.alliedmods.net/showthread.php?t=139916
 #define SetBit(%1,%2)      (%1[%2>>5] |= (1<<(%2 & 31)))
 #define ClearBit(%1,%2)    (%1[%2>>5] &= ~(1<<(%2 & 31)))
 #define CheckBit(%1,%2)    (%1[%2>>5] & (1<<(%2 & 31)))
