@@ -9,7 +9,7 @@
 
 #pragma newdecls required
 
-#define PLUGIN_AUTHOR "Agent Wesker"
+#define PLUGIN_AUTHOR "Agent Wesker & Rules of _P"
 #define PLUGIN_VERSION "1.1"
 
 //#define DEBUG
@@ -37,7 +37,7 @@ public Plugin myinfo =
 {
 	name = "ZR Tagging",
 	author = PLUGIN_AUTHOR,
-	description = "Replacement tagging to fix issues with built in system",
+	description = "Tagging system for CS:GO based on Rules of _P plugin",
 	version = PLUGIN_VERSION,
 	url = "https://steam-gamers.net/"
 };
