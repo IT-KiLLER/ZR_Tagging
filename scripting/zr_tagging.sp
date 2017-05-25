@@ -1,13 +1,16 @@
 #pragma semicolon 1
-//#pragma newdecls required
 
 #include <sourcemod>
 #include <sdktools>
 #include <sdkhooks>
+#undef REQUIRE_EXTENSIONS
 #include <zombiereloaded>
+#define REQUIRE_EXTENSIONS
 
-#define PLUGIN_AUTHOR "Agent Wesker & Rules of _P"
-#define PLUGIN_VERSION "1.0"
+#pragma newdecls required
+
+#define PLUGIN_AUTHOR "Agent Wesker"
+#define PLUGIN_VERSION "1.1"
 
 //#define DEBUG
 
@@ -24,6 +27,7 @@ float g_fBurnCost;
 float g_fTagPenalty;
 float g_fTagDelay;
 float g_fTagTime[MAXPLAYERS+1];
+bool g_bZRLoaded = false;
 int g_iStamOffset = -1;
 int g_iTagged[(64 >> 5) + 1];
 int g_iJumping[(64 >> 5) + 1];
@@ -33,10 +37,21 @@ public Plugin myinfo =
 {
 	name = "ZR Tagging",
 	author = PLUGIN_AUTHOR,
-	description = "Replacement tagging to fix issues with built in system, based on burn_slow",
+	description = "Replacement tagging to fix issues with built in system",
 	version = PLUGIN_VERSION,
 	url = "https://steam-gamers.net/"
 };
+
+public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
+{
+	MarkNativeAsOptional("ZR_IsClientZombie");
+	return APLRes_Success;
+}
+
+public void OnAllPluginsLoaded()
+{
+	g_bZRLoaded = LibraryExists("zombiereloaded");
+}
 
 public void OnPluginStart()
 {
@@ -114,9 +129,9 @@ public void OnTakeDamagePost(int victim, int attacker, int inflictor, float dama
 				return;
 		} else if (StrEqual(sWeapon, "inferno", false)) {
 			//Burn damage should slow, but not molotovs
-			if (!ZR_IsClientZombie(victim))
-			{
-				return;
+			if (g_bZRLoaded) {
+				if (!ZR_IsClientZombie(victim))
+					return;
 			}
 		}
 		SetBit(g_iBurning, victim);
@@ -125,8 +140,15 @@ public void OnTakeDamagePost(int victim, int attacker, int inflictor, float dama
 	}
 	
 	//Tagging, but only for zombies
-	if ((damagetype & DMG_BULLET) && ZR_IsClientZombie(victim) && !ZR_IsClientZombie(attacker))
+	if ((damagetype & DMG_BULLET))
 	{
+		if (g_bZRLoaded)
+		{
+			if (!ZR_IsClientZombie(victim) || ZR_IsClientZombie(attacker))
+			{
+				return;
+			}
+		}
 		SetBit(g_iTagged, victim);
 		g_fTagTime[victim] = GetGameTime() + g_fTagDelay;
 		//Don't overwrite burn slow
