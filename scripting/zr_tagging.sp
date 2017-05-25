@@ -10,7 +10,7 @@
 #pragma newdecls required
 
 #define PLUGIN_AUTHOR "Agent Wesker & Rules of _P"
-#define PLUGIN_VERSION "1.1"
+#define PLUGIN_VERSION "1.2"
 
 //#define DEBUG
 
@@ -183,10 +183,6 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 		if (GetEntPropEnt(client, Prop_Data, "m_hEffectEntity") == -1)
 		{
 			ClearBit(g_iBurning, client);
-			if (!CheckBit(g_iTagged, client))
-			{
-				return Plugin_Continue;
-			}
 		}
 	}
 	
