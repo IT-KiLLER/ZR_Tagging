@@ -10,7 +10,7 @@
 #pragma newdecls required
 
 #define PLUGIN_AUTHOR "Agent Wesker & Rules of _P"
-#define PLUGIN_VERSION "1.2"
+#define PLUGIN_VERSION "1.3"
 
 //#define DEBUG
 
@@ -75,7 +75,7 @@ public void OnPluginStart()
 	g_fTagDelay = GetConVarFloat(g_ConVar_TagDelay);
 	HookConVarChange(g_ConVar_TagDelay, OnConVarChanged);
 	
-	HookEvent("player_spawned", OnPlayerSpawned);
+	HookEvent("player_spawn", OnPlayerSpawn);
 	
 	// Late load
 	for (int i = 1; i <= MaxClients; i++)
@@ -103,7 +103,7 @@ public void OnClientPutInServer(int client)
 	SDKHook(client, SDKHook_OnTakeDamagePost, OnTakeDamagePost);
 }
 
-public void OnPlayerSpawned(Event event, const char[] name, bool dontBroadcast)
+public void OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(GetEventInt(event, "userid"));
 	g_fTagTime[client] = 0.0;
@@ -115,6 +115,11 @@ public void OnPlayerSpawned(Event event, const char[] name, bool dontBroadcast)
 public void OnTakeDamagePost(int victim, int attacker, int inflictor, float damage, int damagetype, int weapon, 
 		const float damageForce[3], const float damagePosition[3], int damagecustom)
 {
+	//Client is not valid
+	if (!IsValidClient(client))
+	{
+		return;
+	}
 
 	//Fire penalty has priority over tagging
 	if (damagetype & DMG_BURN)
