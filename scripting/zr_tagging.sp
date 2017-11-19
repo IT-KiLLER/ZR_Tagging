@@ -10,7 +10,7 @@
 #pragma newdecls required
 
 #define PLUGIN_AUTHOR "Agent Wesker & Rules of _P"
-#define PLUGIN_VERSION "1.3"
+#define PLUGIN_VERSION "1.4"
 
 //#define DEBUG
 
@@ -116,7 +116,7 @@ public void OnTakeDamagePost(int victim, int attacker, int inflictor, float dama
 		const float damageForce[3], const float damagePosition[3], int damagecustom)
 {
 	//Client is not valid
-	if (!IsValidClient(client))
+	if (!IsValidClient(victim) || !IsValidClient(attacker))
 	{
 		return;
 	}
