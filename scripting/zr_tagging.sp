@@ -1,16 +1,12 @@
-#pragma semicolon 1
-
 #include <sourcemod>
 #include <sdktools>
 #include <sdkhooks>
-#undef REQUIRE_EXTENSIONS
 #include <zombiereloaded>
-#define REQUIRE_EXTENSIONS
-
+#pragma semicolon 1
 #pragma newdecls required
 
 #define PLUGIN_AUTHOR "Agent Wesker & Rules of _P"
-#define PLUGIN_VERSION "1.5"
+#define PLUGIN_VERSION "1.5.1"
 
 //#define DEBUG
 
@@ -27,7 +23,6 @@ float g_fBurnCost;
 float g_fTagPenalty;
 float g_fTagDelay;
 float g_fTagTime[MAXPLAYERS+1];
-bool g_bZRLoaded = false;
 int g_iStamOffset = -1;
 int g_iTagged[(64 >> 5) + 1];
 int g_iJumping[(64 >> 5) + 1];
@@ -41,17 +36,6 @@ public Plugin myinfo =
 	version = PLUGIN_VERSION,
 	url = "https://steam-gamers.net/"
 };
-
-public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
-{
-	MarkNativeAsOptional("ZR_IsClientZombie");
-	return APLRes_Success;
-}
-
-public void OnAllPluginsLoaded()
-{
-	g_bZRLoaded = LibraryExists("zombiereloaded");
-}
 
 public void OnPluginStart()
 {
@@ -134,10 +118,8 @@ public void OnTakeDamagePost(int victim, int attacker, int inflictor, float dama
 				return;
 		} else if (StrEqual(sWeapon, "inferno", false)) {
 			//Burn damage should slow, but not molotovs
-			if (g_bZRLoaded) {
-				if (!ZR_IsClientZombie(victim))
-					return;
-			}
+			if (!ZR_IsClientZombie(victim))
+				return;
 		}
 		SetBit(g_iBurning, victim);
 		SetEntDataFloat(victim, g_iStamOffset, g_fBurnCost, true);
@@ -147,12 +129,9 @@ public void OnTakeDamagePost(int victim, int attacker, int inflictor, float dama
 	//Tagging, but only for zombies
 	if ((damagetype & DMG_BULLET))
 	{
-		if (g_bZRLoaded)
+		if (!ZR_IsClientZombie(victim) || ZR_IsClientZombie(attacker))
 		{
-			if (!ZR_IsClientZombie(victim) || ZR_IsClientZombie(attacker))
-			{
-				return;
-			}
+			return;
 		}
 		SetBit(g_iTagged, victim);
 		g_fTagTime[victim] = GetGameTime() + g_fTagDelay;
